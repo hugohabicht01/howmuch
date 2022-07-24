@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
 
   console.log({ latitude, longitude })
-  const response = new NextResponse()
+  const response = NextResponse.next()
   response.cookies.set('detected_latitude', latitude)
   response.cookies.set('detected_longitude', longitude)
   return response
