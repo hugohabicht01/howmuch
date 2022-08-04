@@ -24,4 +24,3 @@ export const pricesRouter = createRouter()
       return await byCoordinates({ apikey: TANKERKOENIG_APIKEY, lat, lng, rad })
     },
   })
-
