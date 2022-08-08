@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import { Prices } from '../components/Prices'
-import { FALLBACKCOORDS } from '../utils/fallback'
+import { FALLBACKCOORDS } from '../utils/coordinate'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
