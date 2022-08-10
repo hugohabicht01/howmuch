@@ -6,9 +6,18 @@ import { getLatLng } from './utils/coordinate'
 export function middleware(request: NextRequest) {
   const { url } = request
   const coordinate = getLatLng({ request, url: request.url })
-  // FIXME: This is totally broken, need to take a look at this with a fresh mind
 
   const params = new URLSearchParams({ lat: coordinate.lat.toString(), lng: coordinate.lng.toString() }).toString()
-  const resultUrl = new URL(url).search = params
-  return NextResponse.rewrite(resultUrl)
+  const resultUrl = new URL(url)
+  resultUrl.search = params
+
+  // Do this check to avoid infinite redirects
+  if (url === resultUrl.toString())
+    return NextResponse.next()
+  return NextResponse.redirect(resultUrl)
+}
+
+// See "Matching Paths" below to learn more
+export const config = {
+  matcher: '/search',
 }
