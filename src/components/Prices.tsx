@@ -1,5 +1,5 @@
 import React from 'react'
-import type { usePetrolPrices } from '../pages/index'
+import type { usePetrolPrices } from '../pages/search'
 import { Station } from './Station'
 
 type petrolpricesResult = ReturnType<typeof usePetrolPrices>

@@ -11,6 +11,7 @@ specifiers:
   '@types/node': 18.0.0
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/styled-jsx': ^3.4.4
   '@vitejs/plugin-react': ^2.0.0
   autoprefixer: ^10.4.7
   c8: ^7.12.0
@@ -24,6 +25,7 @@ specifiers:
   react: 18.2.0
   react-dom: 18.2.0
   react-query: ^3.39.2
+  styled-jsx: ^5.0.4
   superjson: ^1.9.1
   tailwindcss: ^3.1.6
   tankerkoenigv4: ^1.0.1
@@ -53,6 +55,7 @@ devDependencies:
   '@types/node': 18.0.0
   '@types/react': 18.0.14
   '@types/react-dom': 18.0.5
+  '@types/styled-jsx': 3.4.4_react@18.2.0
   '@vitejs/plugin-react': 2.0.0_vite@3.0.4
   autoprefixer: 10.4.7_postcss@8.4.14
   c8: 7.12.0
@@ -61,6 +64,7 @@ devDependencies:
   jsdom: 20.0.0
   postcss: 8.4.14
   prisma: 4.0.0
+  styled-jsx: 5.0.4_react@18.2.0
   tailwindcss: 3.1.6
   typescript: 4.7.4
   vite: 3.0.4
@@ -833,6 +837,17 @@ packages:
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
+    dev: true
+
+  /@types/styled-jsx/3.4.4_react@18.2.0:
+    resolution: {integrity: sha512-PRRa7gU7ske4Vs7sKWrqfKnuIIS6E/Yj5oKyxuM11AwOKhH9HlbQ7cKGLluXkOXzpEoDJE+6kQMj3AE34/JooQ==}
+    deprecated: This is a stub types definition. styled-jsx provides its own type definitions, so you do not need this installed.
+    dependencies:
+      styled-jsx: 5.0.4_react@18.2.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-plugin-macros
+      - react
     dev: true
 
   /@types/unist/2.0.6:
@@ -4021,6 +4036,22 @@ packages:
     dependencies:
       react: 18.2.0
     dev: false
+
+  /styled-jsx/5.0.4_react@18.2.0:
+    resolution: {integrity: sha512-sDFWLbg4zR+UkNzfk5lPilyIgtpddfxXEULxhujorr5jtePTUqiPDc5BC0v1NRqTr/WaFBGQQUoYToGlF4B2KQ==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      babel-plugin-macros: '*'
+      react: '>= 16.8.0 || 17.x.x || ^18.0.0-0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      babel-plugin-macros:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: true
 
   /superjson/1.9.1:
     resolution: {integrity: sha512-oT3HA2nPKlU1+5taFgz/HDy+GEaY+CWEbLzaRJVD4gZ7zMVVC4GDNFdgvAZt6/VuIk6D2R7RtPAiCHwmdzlMmg==}
