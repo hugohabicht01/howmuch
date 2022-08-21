@@ -1,10 +1,9 @@
-import type { NextPage } from 'next'
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import { Prices } from '../components/Prices'
-import { FALLBACKCOORDS } from '../utils/coordinate'
+import { getLatLng } from '../utils/coordinate'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -18,29 +17,10 @@ export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
   return trpc.useQuery(['prices.prices', { lat, lng, rad }], { refetchOnWindowFocus: false })
 }
 
-const Home: NextPage = () => {
-  const router = useRouter()
-  // FIXME: This is not the right way to do this...
-  const { lat, lng } = router.query
-  let parsedLat: number
-  let parsedLng: number
-
-  // Middleware should make sure that we always have lat and lng defined on the url
-  if (typeof lat === 'string' && typeof lng === 'string') {
-    parsedLat = parseFloat(lat)
-    parsedLng = parseFloat(lng)
-  }
-  else {
-    // FIXME: for some reason this gets fired a couple of times before succeding
-    // Possibly the redirect logic/route guard logic should be done inside the getserversideprops instead
-    console.error('expected lat and lng to be coords, url: ', router.route)
-    parsedLat = FALLBACKCOORDS.lat
-    parsedLng = FALLBACKCOORDS.lng
-  }
-
+export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   // TODO: I'm kinda not happy with this being here, since I can't return early cuz of react complaining about conditional hooks
   // at the same time i want to keep prices.tsx to stay purely pure, so I'll probably create a wrapper component
-  const prices = usePetrolPrices({ lat: parsedLat, lng: parsedLng, rad: 2 })
+  const prices = usePetrolPrices({ lat, lng, rad: 2 })
 
   return (
     <>
@@ -64,4 +44,14 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  const { host = 'couldntgethost' } = ctx.req.headers
+  const url = new URL(ctx.resolvedUrl, `http://${host}`).toString()
+  const { lat, lng } = getLatLng({ url })
+  return {
+    props: {
+      lat,
+      lng,
+    },
+  }
+}

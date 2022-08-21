@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   const resultUrl = new URL(url)
   resultUrl.search = params
 
-  // Do this check to avoid infinite redirects
+  // avoid infinite redirects
   if (url === resultUrl.toString())
     return NextResponse.next()
   return NextResponse.redirect(resultUrl)
