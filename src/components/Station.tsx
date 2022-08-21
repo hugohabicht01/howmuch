@@ -1,5 +1,5 @@
 import React from 'react'
-import type { petrolpricesDataType } from '../pages/search'
+import type { petrolpricesDataType } from '../pages/results'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
 

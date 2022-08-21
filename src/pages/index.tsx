@@ -18,7 +18,7 @@ const Home: NextPage = () => {
           </h1>
         </div>
         <div className="flex flex-col items-center px-4 py-2 bg-blue-300 rounded">
-          <Link href="/search">Go to search!</Link>
+          <Link href="/results">Find stations!</Link>
         </div>
       </div>
     </>
