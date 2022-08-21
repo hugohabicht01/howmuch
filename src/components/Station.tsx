@@ -3,11 +3,11 @@ import type { petrolpricesDataType } from '../pages/search'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
 
-interface isOpenProps {
+interface IsOpenProps {
   isOpen: petrolStationType['isOpen']
 }
 
-const Open: React.FC<isOpenProps> = ({ isOpen }) => {
+const Open: React.FC<IsOpenProps> = ({ isOpen }) => {
   switch (isOpen) {
     case true:
       return <span className="text-green-500">Open</span>
@@ -20,11 +20,11 @@ const Open: React.FC<isOpenProps> = ({ isOpen }) => {
 
 type petrolPriceType = petrolStationType['fuels'][number]
 
-interface fuelProps {
+interface FuelProps {
   price: petrolPriceType
 }
 
-const Fuel: React.FC<fuelProps> = ({ price }) => {
+const Fuel: React.FC<FuelProps> = ({ price }) => {
   if (!price)
     return null
   return (
@@ -35,11 +35,11 @@ const Fuel: React.FC<fuelProps> = ({ price }) => {
   )
 }
 
-interface fuelsProps {
+interface FuelsProps {
   prices: petrolPriceType[]
 }
 
-const Fuels: React.FC<fuelsProps> = ({ prices }) => {
+const Fuels: React.FC<FuelsProps> = ({ prices }) => {
   if (prices.length === 0)
     return null
   return (

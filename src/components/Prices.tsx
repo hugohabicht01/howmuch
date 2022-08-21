@@ -1,14 +1,30 @@
 import React from 'react'
-import type { usePetrolPrices } from '../pages/search'
+import type { petrolpricesDataType, usePetrolPrices } from '../pages/search'
 import { Station } from './Station'
+
+type petrolStationType = petrolpricesDataType['stations'][number]
+
+interface StationListProps {
+  stations: petrolStationType[]
+}
+
+const NoStations: React.FC<{}> = () => <p>No stations in the searcharea</p>
+
+const StationList: React.FC<StationListProps> = ({ stations }) => {
+  return (
+    <>
+      {stations.map((station, i) => <Station station={station} key={i} />)}
+    </>
+  )
+}
 
 type petrolpricesResult = ReturnType<typeof usePetrolPrices>
 
-interface Props {
+interface PricesProps {
   prices: petrolpricesResult
 }
 
-export const Prices: React.FC<Props> = ({ prices }) => {
+export const Prices: React.FC<PricesProps> = ({ prices }) => {
   const { isLoading, isError, error, data } = prices
 
   if (isLoading)
@@ -31,7 +47,11 @@ export const Prices: React.FC<Props> = ({ prices }) => {
       <p>Date fetched: {data.timestamp}</p>
       <p>API version: {data.apiVersion}</p>
       <div className="stations">
-        {data.stations.map((station, i) => <Station station={station} key={i} />)}
+        {
+          (data.stations.length > 0)
+            ? <StationList stations={data.stations} />
+            : <NoStations />
+        }
       </div>
       <style jsx>{`
         .stations {
