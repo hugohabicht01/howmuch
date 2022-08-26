@@ -1,10 +1,12 @@
 import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
 import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
-import { Prices } from '../components/Prices'
+import Prices from '../components/Prices'
+import { ResultsMap } from '../components/map/ResultsMap'
 import { getLatLng } from '../utils/coordinate'
-import Map from '../components/map/Map'
+import { StationSelectionContext } from '../utils/contexts'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -20,12 +22,15 @@ export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
 }
 
 export type usePetrolPricesReturnType = ReturnType<typeof usePetrolPrices>
-export type usePetrolPricesDataType = InferQueryOutput<'prices.prices'>
 
 export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   // TODO: I'm kinda not happy with this being here, since I can't return early cuz of react complaining about conditional hooks
   // at the same time i want to keep prices.tsx to stay purely pure, so I'll probably create a wrapper component
   const prices = usePetrolPrices({ lat, lng, rad: 2 })
+
+  // TODO: Move this into a Stateprovider component
+  // This is to know which station has been clicked on the map
+  const [uuid, setUUID] = useState('')
 
   return (
     <>
@@ -41,15 +46,18 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
             Detected coords
           </h1>
         </div>
-        <div className="py-6">
-          <Prices prices={prices} />
-        </div>
-        <div>
-          <h3>
-            Map
-          </h3>
-          <Map />
-        </div>
+        <StationSelectionContext.Provider value={{
+          uuid,
+          select: setUUID,
+        }} >
+          <div className="py-6">
+            <Prices prices={prices} />
+          </div>
+          <div className="flex flex-col justify-center">
+            <h3>Map</h3>
+            <ResultsMap prices={prices} />
+          </div>
+        </StationSelectionContext.Provider>
       </div>
     </>
   )

@@ -1,4 +1,3 @@
-import { memo, useCallback, useState } from 'react'
 import type { ReactNode } from 'react'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 import { FALLBACKCOORDS } from '../../utils/coordinate'
@@ -15,46 +14,37 @@ const { NEXT_PUBLIC_GOOGLE_MAPS_APIKEY } = env
 interface MapProps {
   children?: ReactNode
   center?: LatLng
+  zoom?: number
 }
 
 // eslint-disable-next-line react/prop-types
-const Map: React.FC<MapProps> = ({ children, center }) => {
+const Map: React.FC<MapProps> = ({ children, center, zoom }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: NEXT_PUBLIC_GOOGLE_MAPS_APIKEY,
   })
 
-  const [map, setMap] = useState<google.maps.Map | null>(null)
-
-  const onLoad = useCallback((map: google.maps.Map) => {
-    // const bounds = new window.google.maps.LatLngBounds(center)
-    // map.fitBounds(bounds)
-    setMap(map)
-  }, [])
-
-  const onUnmount = useCallback(() => {
-    setMap(null)
-  }, [])
-
   const mapcenter = center || FALLBACKCOORDS
 
   const options: google.maps.MapOptions = {
-    zoom: 8,
+    zoom: zoom || 8,
     center: mapcenter,
   }
 
-  return (isLoaded
-    ? (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        onLoad={onLoad}
-        options={options}
-        onUnmount={onUnmount}
-      >
-        {children || <></>}
-      </GoogleMap>
-      )
-    : <></>)
+  return (
+    <div className="flex justify-center">
+      {isLoaded
+        ? (
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            options={options}
+            onZoomChanged={() => console.log('zoom changed')}
+          >
+            {children || <></>}
+          </GoogleMap>
+          )
+        : <p>Still loading the map...</p>
+      }
+    </div>)
 }
-export default memo(Map)
+export default Map

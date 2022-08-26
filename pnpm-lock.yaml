@@ -17,6 +17,7 @@ specifiers:
   '@vitejs/plugin-react': ^2.0.0
   autoprefixer: ^10.4.7
   c8: ^7.12.0
+  classnames: ^2.3.1
   eslint: 8.18.0
   eslint-config-next: 12.1.6
   jsdom: ^20.0.0
@@ -44,6 +45,7 @@ dependencies:
   '@trpc/next': 9.26.0_5g6gw5agbbxzl5ad7u6wfr5p3m
   '@trpc/react': 9.26.0_djhsvrj72zaivkfbhig4lanpvq
   '@trpc/server': 9.26.0
+  classnames: 2.3.1
   next: 12.2.0_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.10.0_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
@@ -1392,6 +1394,10 @@ packages:
   /ci-info/3.3.2:
     resolution: {integrity: sha512-xmDt/QIAdeZ9+nfdPsaBCpMvHNLFiLdjj59qjqn+6iPe6YmHGQ35sBnQ8uslRBXFmXkiZQOJRjvQeoGppoTjjg==}
     dev: true
+
+  /classnames/2.3.1:
+    resolution: {integrity: sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==}
+    dev: false
 
   /clean-regexp/1.0.0:
     resolution: {integrity: sha512-GfisEZEJvzKrmGWkvfhgzcz/BllN1USeqD2V6tg14OAOgaCD2Z/PUEuxnAZ/nPvmaHRG7a8y77p1T/IRQ4D1Hw==}
