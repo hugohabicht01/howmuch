@@ -1,5 +1,5 @@
 import React from 'react'
-import type { petrolpricesDataType, usePetrolPrices } from '../pages/results'
+import type { petrolpricesDataType, usePetrolPricesReturnType } from '../pages/results'
 import { Station } from './Station'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
@@ -18,10 +18,8 @@ const StationList: React.FC<StationListProps> = ({ stations }) => {
   )
 }
 
-type petrolpricesResult = ReturnType<typeof usePetrolPrices>
-
 interface PricesProps {
-  prices: petrolpricesResult
+  prices: usePetrolPricesReturnType
 }
 
 export const Prices: React.FC<PricesProps> = ({ prices }) => {

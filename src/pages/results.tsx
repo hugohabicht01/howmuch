@@ -4,6 +4,7 @@ import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import { Prices } from '../components/Prices'
 import { getLatLng } from '../utils/coordinate'
+import Map from '../components/map/Map'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -11,11 +12,15 @@ export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
 /**
  * TODO: Fetch the data on the server side
  * @see https://trpc.io/docs/ssg-helpers
+ * Issue: https://github.com/hugohabicht01/howmuch/issues/6
  */
 
 export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
   return trpc.useQuery(['prices.prices', { lat, lng, rad }], { refetchOnWindowFocus: false })
 }
+
+export type usePetrolPricesReturnType = ReturnType<typeof usePetrolPrices>
+export type usePetrolPricesDataType = InferQueryOutput<'prices.prices'>
 
 export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   // TODO: I'm kinda not happy with this being here, since I can't return early cuz of react complaining about conditional hooks
@@ -38,6 +43,12 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
         </div>
         <div className="py-6">
           <Prices prices={prices} />
+        </div>
+        <div>
+          <h3>
+            Map
+          </h3>
+          <Map />
         </div>
       </div>
     </>
