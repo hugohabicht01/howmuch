@@ -38,6 +38,7 @@ const Map: React.FC<MapProps> = ({ children, center, zoom }) => {
           <GoogleMap
             mapContainerStyle={containerStyle}
             options={options}
+            // eslint-disable-next-line no-console
             onZoomChanged={() => console.log('zoom changed')}
           >
             {children || <></>}
