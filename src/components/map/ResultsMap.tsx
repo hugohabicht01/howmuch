@@ -1,7 +1,8 @@
 import { Marker, useGoogleMap } from '@react-google-maps/api'
 import { useContext, useState } from 'react'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
-import { GoogleMapsContext, StationSelectionContext } from '../../utils/contexts'
+import { StationSelectionContext, ZoomContext } from '../../utils/contexts'
+import { FALLBACKCOORDS } from '../../utils/coordinate'
 import Map from './Map'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
@@ -27,6 +28,8 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
   // Intercomponent communication using context, could be replaced by a state management lib
   const { select, uuid } = useContext(StationSelectionContext)
 
+  const { setZoom, setCenter } = useContext(ZoomContext)
+
   const map = useGoogleMap()
   const [markers, setMarkers] = useState<Record<string, google.maps.Marker>>({})
 
@@ -44,17 +47,25 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
     setTimeout(() => marker.setAnimation(null), 100)
   }
 
-  const onClick = (id: string) => () => {
+  const onClick = (id: string) => (e: google.maps.MapMouseEvent) => {
+    e.stop()
     select(id)
     bounceStation(id)
 
-    const station = stations.find(s => s.id === uuid)
-    if (map && station) {
-      // FIXME: This doesn't work for some reason
-      // Its beyond me, why it doesn't, but it doesn't
-      map.panTo(station.coords)
-      map.setZoom(17)
+    const station = stations.find(s => s.id === id)
+    // TODO: Make this fire when clicking on station component as well
+    // TODO: Add state to the station itself and make it toggleable
+    // FIXME: This doesn't animate the panning towards the next coord, maybe try to get it fixed
+    if (station) {
+      setCenter(station.coords)
+      setZoom(15)
     }
+    // if (map && station) {
+    //   // FIXME: This doesn't work for some reason
+    //   // Its beyond me, why it doesn't, but it doesn't
+    //   map.panTo(station.coords)
+    //   map.setZoom(17)
+    // }
   }
 
   const onLoad = (station: petrolStationType) => (marker: google.maps.Marker) => {
@@ -90,9 +101,19 @@ interface ResultsMapProps {
 
 export const ResultsMap = ({ prices }: ResultsMapProps): JSX.Element => {
   const { data } = prices
+
+  const [zoom, setZoom] = useState(11)
+  const [center, setCenter] = useState(FALLBACKCOORDS)
+  // return (
+  //   <Map zoom={data ? 11 : 8}>
+  //     {data && <MarkerList stations={data.stations} />}
+  //   </Map>
+  // )
   return (
-    <Map zoom={data ? 11 : 8}>
-      {data && <MarkerList stations={data.stations} />}
-    </Map>
+    <ZoomContext.Provider value={{ zoom, setZoom, center, setCenter }} >
+      <Map zoom={zoom} center={center}>
+        {data && <MarkerList stations={data.stations} />}
+      </Map>
+    </ZoomContext.Provider>
   )
 }
