@@ -26,9 +26,6 @@ interface PricesProps {
 const Prices: React.FC<PricesProps> = ({ prices }) => {
   return (
     <>
-      <h1>Prices</h1>
-      <p>Date fetched: {prices.timestamp}</p>
-      <p>API version: {prices.apiVersion}</p>
       <div className="stations">
         {
           (prices.stations.length > 0)

@@ -1,5 +1,5 @@
 import { Marker, useGoogleMap } from '@react-google-maps/api'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
 import { StationSelectionContext, ZoomContext } from '../../utils/contexts'
 import { FALLBACKCOORDS } from '../../utils/coordinate'
@@ -55,17 +55,11 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
     const station = stations.find(s => s.id === id)
     // TODO: Make this fire when clicking on station component as well
     // TODO: Add state to the station itself and make it toggleable
-    // FIXME: This doesn't animate the panning towards the next coord, maybe try to get it fixed
+    // TODO: Move this somewhere else and let the station itself own the state
     if (station) {
       setCenter(station.coords)
       setZoom(15)
     }
-    // if (map && station) {
-    //   // FIXME: This doesn't work for some reason
-    //   // Its beyond me, why it doesn't, but it doesn't
-    //   map.panTo(station.coords)
-    //   map.setZoom(17)
-    // }
   }
 
   const onLoad = (station: petrolStationType) => (marker: google.maps.Marker) => {
@@ -102,16 +96,22 @@ interface ResultsMapProps {
 export const ResultsMap = ({ prices }: ResultsMapProps): JSX.Element => {
   const { data } = prices
 
+  const [map, setMap] = useState<google.maps.Map | null>(null)
+
   const [zoom, setZoom] = useState(11)
   const [center, setCenter] = useState(FALLBACKCOORDS)
-  // return (
-  //   <Map zoom={data ? 11 : 8}>
-  //     {data && <MarkerList stations={data.stations} />}
-  //   </Map>
-  // )
+
+  useEffect(() => {
+    console.log(`center: ${center.lat}, ${center.lng} `)
+    // Unfortunately this is the only place the panning to the map actually works.
+    // Dont ask me why, I've tried many times to get the panning to work at other places...
+    if (map)
+      map.panTo(center)
+  }, [center, map])
+
   return (
     <ZoomContext.Provider value={{ zoom, setZoom, center, setCenter }} >
-      <Map zoom={zoom} center={center}>
+      <Map zoom={zoom} center={center} onLoad={setMap}>
         {data && <MarkerList stations={data.stations} />}
       </Map>
     </ZoomContext.Provider>

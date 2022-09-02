@@ -83,7 +83,7 @@ const generateNavigationLink = (address: string) => {
 }
 
 export const Station: React.FC<Props> = ({ station }) => {
-  const { uuid, select: notify } = useContext(StationSelectionContext)
+  const { uuid, select } = useContext(StationSelectionContext)
   const isSelected = uuid === station.id
   const { name, brand, street, postalCode, place, isOpen, fuels } = station
 
@@ -92,6 +92,10 @@ export const Station: React.FC<Props> = ({ station }) => {
   const formattedName = formatName(name, brand)
 
   const navigationLink = generateNavigationLink(formattedLocation)
+
+  const onClick = (id: string) => () => {
+    select(id)
+  }
 
   return (
     <div className={cn({
@@ -105,7 +109,7 @@ export const Station: React.FC<Props> = ({ station }) => {
       'border-gray-200': true,
       'border-blue-500': isSelected,
     })}
-      onClick={() => notify(station.id)}>
+      onClick={onClick(station.id)}>
       <h2 className="text-lg font-semibold">{formattedName}</h2>
       <p>{formattedLocation}</p>
       <p><Open isOpen={isOpen} /></p>

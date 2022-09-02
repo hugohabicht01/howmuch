@@ -15,10 +15,11 @@ interface MapProps {
   children?: ReactNode
   center?: LatLng
   zoom?: number
+  onLoad?: (map: google.maps.Map) => void
 }
 
 // eslint-disable-next-line react/prop-types
-const Map: React.FC<MapProps> = ({ children, center, zoom }) => {
+const Map: React.FC<MapProps> = ({ children, center, zoom, onLoad }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: NEXT_PUBLIC_GOOGLE_MAPS_APIKEY,
@@ -38,12 +39,13 @@ const Map: React.FC<MapProps> = ({ children, center, zoom }) => {
           <GoogleMap
             mapContainerStyle={containerStyle}
             options={options}
+            onLoad={(map: google.maps.Map) => onLoad && onLoad(map)}
             // eslint-disable-next-line no-console
             onZoomChanged={() => console.log('zoom changed')}
           >
             {children || <></>}
           </GoogleMap>
-          )
+        )
         : <p>Still loading the map...</p>
       }
     </div>)

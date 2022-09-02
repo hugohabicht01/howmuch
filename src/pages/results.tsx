@@ -40,12 +40,14 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col items-center w-8/10 min-h-screen mx-auto">
-        <div>
-          <h1 className="font-semibold text-lg">
-            Detected coords
-          </h1>
-        </div>
+      <div className="flex flex-col items-center w-8/10 min-h-screen mx-auto bg-gradient-to-r from-rose-400 to-orange-300">
+        <header className="flex border-gray border-b bg-gradient-to-b from-sky-400 to-sky-200 w-full skey-y-4">
+          <div className="p-10">
+            <h1 className="font-semibold text-5xl w-max bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+              how much
+            </h1>
+          </div>
+        </header>
         <StationSelectionContext.Provider value={{
           uuid,
           select: setUUID,
