@@ -5,8 +5,8 @@ import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import Prices from '../components/Prices'
 import Map from '../components/map/Map'
-import { getLatLng } from '../utils/coordinate'
-import { StationSelectionContext } from '../utils/contexts'
+import { FALLBACKCOORDS, getLatLng } from '../utils/coordinate'
+import { MapContext, StationSelectionContext } from '../utils/contexts'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -32,6 +32,20 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
   // This is to know which station has been clicked on the map
   const [uuid, setUUID] = useState('')
 
+  const [map, setMap] = useState<google.maps.Map | null>(null)
+
+  const [zoom, setZoom] = useState(11)
+  const [center, setCenter] = useState(FALLBACKCOORDS)
+
+  const MapContextValue = {
+    map,
+    setMap,
+    zoom,
+    setZoom,
+    center,
+    setCenter,
+  }
+
   return (
     <>
       <Head>
@@ -49,18 +63,21 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
             </h1>
           </div>
         </header>
-        <StationSelectionContext.Provider value={{
-          uuid,
-          select: setUUID,
-        }} >
-          <div className="py-6">
-            <Prices prices={prices} />
-          </div>
-          <div className="flex flex-col justify-center">
-            <h3>Map</h3>
-            <Map prices={prices} />
-          </div>
-        </StationSelectionContext.Provider>
+        <MapContext.Provider value={MapContextValue}>
+          {/* TODO: Move this into the MapContext */}
+          <StationSelectionContext.Provider value={{
+            uuid,
+            select: setUUID,
+          }} >
+            <div className="py-6">
+              <Prices prices={prices} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <h3>Map</h3>
+              <Map prices={prices} />
+            </div>
+          </StationSelectionContext.Provider>
+        </MapContext.Provider>
       </div>
     </>
   )

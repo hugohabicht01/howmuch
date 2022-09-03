@@ -12,12 +12,22 @@ export const StationSelectionContext = createContext<StationSelectionType>({
   select: () => { },
 })
 
-// TODO: Think about putting this into a store instead of using context for everything
-interface ZoomContextType {
+interface MapContextType {
+  map: google.maps.Map | null
+  setMap: (map: google.maps.Map) => void
+
   zoom: number
   setZoom: (newZoom: number) => void
   center: LatLng
   setCenter: (newCoords: LatLng) => void
 }
 
-export const ZoomContext = createContext<ZoomContextType>({ zoom: 11, center: FALLBACKCOORDS, setZoom: () => { }, setCenter: () => { } })
+export const MapContext = createContext<MapContextType>({
+  map: null,
+  setMap: () => { console.error('default handler for setMap, this should never be called') },
+
+  zoom: 11,
+  center: FALLBACKCOORDS,
+  setZoom: () => { console.error('default handler for setZoom ran, this should never happen') },
+  setCenter: () => { console.error('default handler for setZoom ran, this should never happen') },
+})

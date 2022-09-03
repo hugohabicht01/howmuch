@@ -1,10 +1,8 @@
-/* eslint-disable no-console */
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { env } from '../../env/client.mjs'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
-import { StationSelectionContext, ZoomContext } from '../../utils/contexts'
-import { FALLBACKCOORDS } from '../../utils/coordinate'
+import { MapContext, StationSelectionContext } from '../../utils/contexts'
 
 interface MarkerListProps {
   stations: petrolpricesDataType['stations']
@@ -27,7 +25,7 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
   // Intercomponent communication using context, could be replaced by a state management lib
   const { select, uuid } = useContext(StationSelectionContext)
 
-  const { setZoom, setCenter } = useContext(ZoomContext)
+  const { setZoom, setCenter } = useContext(MapContext)
 
   const onClick = (id: string) => () => {
     select(id)
@@ -79,13 +77,15 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
 
   const { data } = prices
 
-  const [map, setMap] = useState<google.maps.Map | null>(null)
-
-  const [zoom, setZoom] = useState(11)
-  const [center, setCenter] = useState(FALLBACKCOORDS)
+  const {
+    map,
+    setMap,
+    zoom,
+    setZoom,
+    center,
+  } = useContext(MapContext)
 
   useEffect(() => {
-    console.log(`center: ${center.lat}, ${center.lng} `)
     // Unfortunately this is the only place the panning to the map actually works.
     // Dont ask me why, I've tried many times to get the panning to work at other places...
     if (map)
@@ -93,7 +93,6 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
   }, [center, map])
 
   useEffect(() => {
-    console.log(`zoom: ${zoom}`)
     if (map)
       setTimeout(() => map.setZoom(zoom), 1)
   }, [zoom, map])
@@ -102,14 +101,22 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
     <div className="flex justify-center">
       {isLoaded
         ? (
-          <ZoomContext.Provider value={{ zoom, setZoom, center, setCenter }} >
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              onLoad={(m: google.maps.Map) => setMap(m)}
-            >
-              {data && <MarkerList stations={data.stations} />}
-            </GoogleMap>
-          </ZoomContext.Provider>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            onLoad={setMap}
+            // onZoomChanged={() => {
+            //   console.log(`new zoom: ${map?.getZoom()}`)
+            // }}
+            onZoomChanged={() => {
+              if (!map)
+                return
+              const currentZoom = map.getZoom()
+              if (currentZoom)
+                setZoom(currentZoom)
+            }}
+          >
+            {data && <MarkerList stations={data.stations} />}
+          </GoogleMap>
           )
         : <p>Still loading the map...</p>
       }
