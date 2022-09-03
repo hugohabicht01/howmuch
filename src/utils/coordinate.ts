@@ -1,5 +1,4 @@
 import { z } from 'zod'
-// eslint-disable-next-line @next/next/no-server-import-in-page
 import type { NextRequest } from 'next/server'
 /**
  * These are some fallback coordinates which can be used if the users location can't be determined instantly

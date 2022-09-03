@@ -1,3 +1,5 @@
+/* eslint-disable vars-on-top */
+/* eslint-disable no-var */
 // src/server/db/client.ts
 import { PrismaClient } from '@prisma/client'
 
@@ -13,4 +15,3 @@ export const prisma
 
 if (process.env.NODE_ENV !== 'production')
   global.prisma = prisma
-

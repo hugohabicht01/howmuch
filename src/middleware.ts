@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-server-import-in-page */
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { getLatLng } from './utils/coordinate'
