@@ -1,5 +1,5 @@
 import React from 'react'
-import type { petrolpricesDataType, usePetrolPrices } from '../pages/results'
+import type { petrolpricesDataType, usePetrolPricesReturnType } from '../pages/results'
 import { Station } from './Station'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
@@ -18,38 +18,18 @@ const StationList: React.FC<StationListProps> = ({ stations }) => {
   )
 }
 
-type petrolpricesResult = ReturnType<typeof usePetrolPrices>
-
 interface PricesProps {
-  prices: petrolpricesResult
+  prices: petrolpricesDataType
 }
 
-export const Prices: React.FC<PricesProps> = ({ prices }) => {
-  const { isLoading, isError, error, data } = prices
-
-  if (isLoading)
-    return <p>Still loading, hang on...</p>
-
-  if (isError || !data) {
-    return (
-      <div>
-        <p>
-          Something went wrong, error:
-        </p>
-        <pre>{JSON.stringify(error, null, 2)}</pre>
-      </div>
-    )
-  }
-
+// TODO: Fix naming of this function and the default export
+const Prices: React.FC<PricesProps> = ({ prices }) => {
   return (
     <>
-      <h1>Prices</h1>
-      <p>Date fetched: {data.timestamp}</p>
-      <p>API version: {data.apiVersion}</p>
       <div className="stations">
         {
-          (data.stations.length > 0)
-            ? <StationList stations={data.stations} />
+          (prices.stations.length > 0)
+            ? <StationList stations={prices.stations} />
             : <NoStations />
         }
       </div>
@@ -74,4 +54,26 @@ export const Prices: React.FC<PricesProps> = ({ prices }) => {
       </style>
     </>
   )
+}
+
+interface PricesDataProps {
+  prices: usePetrolPricesReturnType
+}
+
+export default function PricesData({ prices: { isLoading, isError, error, data } }: PricesDataProps) {
+  if (isLoading)
+    return <p>Still loading, hang on...</p>
+
+  if (isError || !data) {
+    return (
+      <div>
+        <p>
+          Something went wrong, error:
+        </p>
+        <pre>{JSON.stringify(error, null, 2)}</pre>
+      </div>
+    )
+  }
+
+  return <Prices prices={data} />
 }

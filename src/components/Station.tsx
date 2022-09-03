@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import cn from 'classnames'
 import type { petrolpricesDataType } from '../pages/results'
+import { MapContext, StationSelectionContext } from '../utils/contexts'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
 
@@ -81,6 +83,10 @@ const generateNavigationLink = (address: string) => {
 }
 
 export const Station: React.FC<Props> = ({ station }) => {
+  const { uuid, select } = useContext(StationSelectionContext)
+  const { setZoom, setCenter } = useContext(MapContext)
+
+  const isSelected = uuid === station.id
   const { name, brand, street, postalCode, place, isOpen, fuels } = station
 
   const formattedLocation = joinStrings([street, postalCode, place])
@@ -89,8 +95,26 @@ export const Station: React.FC<Props> = ({ station }) => {
 
   const navigationLink = generateNavigationLink(formattedLocation)
 
+  // TODO: Remove this code duplication and instead write a custom hook that can be used both here and inside the resultsmap
+  const onClick = (id: string) => () => {
+    select(id)
+    setCenter(station.coords)
+    setZoom(15)
+  }
+
   return (
-    <div className="bg-blue-50 shadow rounded m-4 p-8">
+    <div className={cn({
+      'rounded': true,
+      'm-4': true,
+      'p-8': true,
+      'cursor-pointer': true,
+      'bg-blue-50': !isSelected,
+      'bg-blue-100': isSelected,
+      'border': true,
+      'border-gray-200': true,
+      'border-blue-500': isSelected,
+    })}
+      onClick={onClick(station.id)}>
       <h2 className="text-lg font-semibold">{formattedName}</h2>
       <p>{formattedLocation}</p>
       <p><Open isOpen={isOpen} /></p>
