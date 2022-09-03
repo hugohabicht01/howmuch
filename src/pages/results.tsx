@@ -5,7 +5,7 @@ import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import Prices from '../components/Prices'
 import Map from '../components/map/Map'
-import { FALLBACKCOORDS, getLatLng } from '../utils/coordinate'
+import { getLatLng } from '../utils/coordinate'
 import { MapContext, StationSelectionContext } from '../utils/contexts'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
@@ -35,7 +35,7 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
   const [map, setMap] = useState<google.maps.Map | null>(null)
 
   const [zoom, setZoom] = useState(11)
-  const [center, setCenter] = useState(FALLBACKCOORDS)
+  const [center, setCenter] = useState({ lat, lng })
 
   const MapContextValue = {
     map,
