@@ -4,16 +4,23 @@ import { getLatLng } from './utils/coordinate'
 
 export function middleware(request: NextRequest) {
   const { url } = request
+  const currentUrl = new URL(url)
+
+  const { geo } = request
+  if (geo?.country !== 'DE') {
+    currentUrl.pathname = '/notsupported'
+    return NextResponse.redirect(currentUrl)
+  }
+
   const coordinate = getLatLng({ request, url: request.url })
 
   const params = new URLSearchParams({ lat: coordinate.lat.toString(), lng: coordinate.lng.toString() }).toString()
-  const resultUrl = new URL(url)
-  resultUrl.search = params
+  currentUrl.search = params
 
   // avoid infinite redirects
-  if (url === resultUrl.toString())
+  if (url === currentUrl.toString())
     return NextResponse.next()
-  return NextResponse.redirect(resultUrl)
+  return NextResponse.redirect(currentUrl)
 }
 
 // See "Matching Paths" below to learn more
