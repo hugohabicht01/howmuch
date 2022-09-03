@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import cn from 'classnames'
 import type { petrolpricesDataType } from '../pages/results'
-import { StationSelectionContext } from '../utils/contexts'
+import { StationSelectionContext, ZoomContext } from '../utils/contexts'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
 
@@ -84,6 +84,7 @@ const generateNavigationLink = (address: string) => {
 
 export const Station: React.FC<Props> = ({ station }) => {
   const { uuid, select } = useContext(StationSelectionContext)
+  const { setZoom, setCenter } = useContext(ZoomContext)
   const isSelected = uuid === station.id
   const { name, brand, street, postalCode, place, isOpen, fuels } = station
 
@@ -93,8 +94,11 @@ export const Station: React.FC<Props> = ({ station }) => {
 
   const navigationLink = generateNavigationLink(formattedLocation)
 
+  // TODO: Remove this code duplication and instead write a custom hook that can be used both here and inside the resultsmap
   const onClick = (id: string) => () => {
     select(id)
+    setCenter(station.coords)
+    setZoom(15)
   }
 
   return (

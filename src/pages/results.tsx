@@ -4,7 +4,7 @@ import { useState } from 'react'
 import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import Prices from '../components/Prices'
-import { ResultsMap } from '../components/map/ResultsMap'
+import Map from '../components/map/Map'
 import { getLatLng } from '../utils/coordinate'
 import { StationSelectionContext } from '../utils/contexts'
 
@@ -40,7 +40,8 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex flex-col items-center w-8/10 min-h-screen mx-auto bg-gradient-to-r from-rose-400 to-orange-300">
+      {/* TODO: Move this stuff into a layout component */}
+      <div className="flex flex-col items-center w-8/10 min-h-screen mx-auto bg-gradient-to-r from-rose-400 to-orange-300 pb-20">
         <header className="flex border-gray border-b bg-gradient-to-b from-sky-400 to-sky-200 w-full skey-y-4">
           <div className="p-10">
             <h1 className="font-semibold text-5xl w-max bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
@@ -57,7 +58,7 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
           </div>
           <div className="flex flex-col justify-center">
             <h3>Map</h3>
-            <ResultsMap prices={prices} />
+            <Map prices={prices} />
           </div>
         </StationSelectionContext.Provider>
       </div>
