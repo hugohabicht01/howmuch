@@ -7,7 +7,8 @@ export function middleware(request: NextRequest) {
   const currentUrl = new URL(url)
 
   const { geo } = request
-  if (geo?.country !== 'DE') {
+  const { country } = geo ?? { country: undefined }
+  if (country !== undefined && country !== 'DE') {
     currentUrl.pathname = '/notsupported'
     return NextResponse.redirect(currentUrl)
   }
