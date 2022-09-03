@@ -7,6 +7,7 @@ import Prices from '../components/Prices'
 import Map from '../components/map/Map'
 import { getLatLng } from '../utils/coordinate'
 import { MapContext, StationSelectionContext } from '../utils/contexts'
+import Layout from '../components/layout'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -54,15 +55,8 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* TODO: Move this stuff into a layout component */}
-      <div className="flex flex-col items-center w-8/10 min-h-screen mx-auto bg-gradient-to-r from-rose-400 to-orange-300 pb-20">
-        <header className="flex border-gray border-b bg-gradient-to-b from-sky-400 to-sky-200 w-full skey-y-4">
-          <div className="p-10">
-            <h1 className="font-semibold text-5xl w-max bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
-              how much
-            </h1>
-          </div>
-        </header>
+      <Layout>
+        {/* TODO: Move this stuff into a layout component */}
         <MapContext.Provider value={MapContextValue}>
           {/* TODO: Move this into the MapContext */}
           <StationSelectionContext.Provider value={{
@@ -78,7 +72,7 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
             </div>
           </StationSelectionContext.Provider>
         </MapContext.Provider>
-      </div>
+      </Layout>
     </>
   )
 }
