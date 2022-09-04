@@ -1,4 +1,4 @@
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { GoogleMap, Marker, useJsApiLoader, useLoadScript } from '@react-google-maps/api'
 import { useContext, useEffect } from 'react'
 import { env } from '../../env/client.mjs'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
@@ -69,11 +69,15 @@ const containerStyle = {
   height: '50vh',
 }
 
+const loadScriptOptions = {
+  id: 'google-map-script',
+  libraries: ['geometry'],
+  googleMapsApiKey: NEXT_PUBLIC_GOOGLE_MAPS_APIKEY,
+} as const
+
 const Map = ({ prices }: ResultsMapProps): JSX.Element => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: NEXT_PUBLIC_GOOGLE_MAPS_APIKEY,
-  })
+  // @ts-expect-error due to the library having retarded type defs
+  const { isLoaded, loadError } = useLoadScript(loadScriptOptions)
 
   const { data } = prices
 
@@ -96,6 +100,13 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
     if (map)
       setTimeout(() => map.setZoom(zoom), 1)
   }, [zoom, map])
+
+  if (loadError) {
+    console.error('Error while loading google maps: ', loadError)
+    return <div className="flex justify-center">
+      Maps couldn&apos;t be loaded
+    </div>
+  }
 
   return (
     <div className="flex justify-center">

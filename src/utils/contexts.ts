@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 import type { LatLng } from './coordinate'
 import { FALLBACKCOORDS } from './coordinate'
+import type { LocationStateType } from './geolocation'
 
 interface StationSelectionType {
   select: (id: string) => void
@@ -31,3 +32,5 @@ export const MapContext = createContext<MapContextType>({
   setZoom: () => { console.error('default handler for setZoom ran, this should never happen') },
   setCenter: () => { console.error('default handler for setZoom ran, this should never happen') },
 })
+
+export const GeolocationContext = createContext<LocationStateType>({ isLoading: true, coords: null, error: null })

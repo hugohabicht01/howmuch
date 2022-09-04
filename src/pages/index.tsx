@@ -3,39 +3,12 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Layout from '../components/layout'
+import { useGeolocation } from '../utils/geolocation'
 
 const Home: NextPage = () => {
-  interface LocationFoundType {
-    coords: GeolocationPosition
-    error: null
-    isLoading: false
-  }
-
-  interface LocationErrorType {
-    coords: null
-    error: GeolocationPositionError
-    isLoading: false
-  }
-
-  interface LocationLoadingType {
-    coords: null
-    error: null
-    isLoading: true
-  }
-
-  type LocationStateType = LocationFoundType | LocationErrorType | LocationLoadingType
-
-  const [location, setLocation] = useState<LocationStateType>({ coords: null, error: null, isLoading: true })
-
   const [navigationLink, setNavigationLink] = useState('/results')
 
-  const locationSuccessHandler = (pos: GeolocationPosition) => setLocation({ coords: pos, error: null, isLoading: false })
-  const locationErrorHandler = (err: GeolocationPositionError) => setLocation({ coords: null, error: err, isLoading: false })
-
-  useEffect(() => {
-    if ('geolocation' in navigator)
-      navigator.geolocation.getCurrentPosition(locationSuccessHandler, locationErrorHandler)
-  })
+  const location = useGeolocation()
 
   useEffect(() => {
     location.coords && setNavigationLink(`/results?lat=${location.coords.coords.latitude}&lng=${location.coords.coords.longitude}`)

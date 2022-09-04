@@ -1,13 +1,15 @@
 import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 import { trpc } from '../utils/trpc'
 import Prices from '../components/Prices'
 import Map from '../components/map/Map'
+import type { LatLng } from '../utils/coordinate'
 import { getLatLng } from '../utils/coordinate'
 import { MapContext, StationSelectionContext } from '../utils/contexts'
 import Layout from '../components/layout'
+import { useGeolocation } from '../utils/geolocation'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -25,9 +27,10 @@ export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
 export type usePetrolPricesReturnType = ReturnType<typeof usePetrolPrices>
 
 export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  // TODO: I'm kinda not happy with this being here, since I can't return early cuz of react complaining about conditional hooks
-  // at the same time i want to keep prices.tsx to stay purely pure, so I'll probably create a wrapper component
-  const prices = usePetrolPrices({ lat, lng, rad: 2 })
+  const context = trpc.useContext()
+  const [loc, setLoc] = useState<LatLng>({ lat, lng })
+
+  const prices = usePetrolPrices({ ...loc, rad: 2 })
 
   // TODO: Move this into a Stateprovider component
   // This is to know which station has been clicked on the map
@@ -47,6 +50,31 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
     setCenter,
   }
 
+  // TODO: Debounce this and then put it into a context
+  const location = useGeolocation()
+  const { coords } = location
+
+  // FIXME: This whole thing is really unclean, gotta think about a better way of implementing this kind of logic
+  // It also causes massive performance issues, therefore its not ready for use just yet
+
+  useEffect(() => {
+    if (coords) {
+      const geolocationLatLng = { lat: coords.coords.latitude, lng: coords.coords.longitude }
+      // FIXME: This also causes massive performance issues, therefore its not ready for use just yet
+      // if (center !== geolocationLatLng)
+      //   setCenter(geolocationLatLng)
+
+      if (window.google?.maps) {
+        const distance = window.google.maps.geometry.spherical.computeDistanceBetween(geolocationLatLng, loc)
+        // If our current geolocation is off by more than 200 meters, refresh the data
+        if (distance > 200) {
+          setLoc(geolocationLatLng)
+          context.invalidateQueries('prices.prices')
+        }
+      }
+    }
+  }, [coords])
+
   return (
     <>
       <Head>
@@ -56,7 +84,6 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
       </Head>
 
       <Layout>
-        {/* TODO: Move this stuff into a layout component */}
         <MapContext.Provider value={MapContextValue}>
           {/* TODO: Move this into the MapContext */}
           <StationSelectionContext.Provider value={{
