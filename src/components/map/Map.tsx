@@ -1,4 +1,4 @@
-import { GoogleMap, Marker, useJsApiLoader, useLoadScript } from '@react-google-maps/api'
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api'
 import { useContext, useEffect } from 'react'
 import { env } from '../../env/client.mjs'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
