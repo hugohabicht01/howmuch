@@ -10,6 +10,7 @@ specifiers:
   '@trpc/react': ^9.27.2
   '@trpc/server': ^9.27.2
   '@types/google.maps': ^3.50.1
+  '@types/haversine': ^1.1.5
   '@types/node': 18.7.17
   '@types/react': 18.0.19
   '@types/react-dom': 18.0.6
@@ -20,6 +21,7 @@ specifiers:
   classnames: ^2.3.2
   eslint: 8.23.1
   eslint-config-next: 12.3.0
+  haversine: ^1.1.1
   jsdom: ^20.0.0
   next: 12.3.0
   next-auth: ^4.10.3
@@ -33,6 +35,7 @@ specifiers:
   tailwindcss: ^3.1.8
   tankerkoenigv4: ^1.0.3
   taze: ^0.8.0
+  type-fest: ^2.19.0
   typescript: 4.8.3
   vite: ^3.1.0
   vitest: ^0.23.2
@@ -47,6 +50,7 @@ dependencies:
   '@trpc/react': 9.27.2_e7pohnznr4qdgpqc5x4q3pmfcu
   '@trpc/server': 9.27.2
   classnames: 2.3.2
+  haversine: 1.1.1
   next: 12.3.0_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.10.3_biqbaboplfbrettd7655fr4n2y
   react: 18.2.0
@@ -59,6 +63,7 @@ dependencies:
 devDependencies:
   '@antfu/eslint-config': 0.26.3_irgkl5vooow2ydyo6aokmferha
   '@types/google.maps': 3.50.1
+  '@types/haversine': 1.1.5
   '@types/node': 18.7.17
   '@types/react': 18.0.19
   '@types/react-dom': 18.0.6
@@ -74,6 +79,7 @@ devDependencies:
   styled-jsx: 5.0.7_react@18.2.0
   tailwindcss: 3.1.8
   taze: 0.8.0
+  type-fest: 2.19.0
   typescript: 4.8.3
   vite: 3.1.0
   vitest: 0.23.2_jsdom@20.0.0
@@ -938,6 +944,10 @@ packages:
 
   /@types/google.maps/3.50.1:
     resolution: {integrity: sha512-Wd3+cZwIk2DhDDosYCvXREvBfRAy9eXTf44YOcOKXhzN88AnLOCO+vrKH0N+QiP3SUtf7A6hn3yVJrMdXIqp1g==}
+    dev: true
+
+  /@types/haversine/1.1.5:
+    resolution: {integrity: sha512-ITIhOBn4tjADEWTfiR3U0ioNRRNOlMJjornJZA/O6pTkvqV69or1Ms0reMNQw3la+wURknlRd1DW+CYUcCvq8A==}
     dev: true
 
   /@types/istanbul-lib-coverage/2.0.4:
@@ -2915,6 +2925,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /haversine/1.1.1:
+    resolution: {integrity: sha512-KW4MS8+krLIeiw8bF5z532CptG0ZyGGFj0UbKMxx25lKnnJ1hMUbuzQl+PXQjNiDLnl1bOyz23U6hSK10r4guw==}
+    dev: false
 
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -5068,6 +5082,11 @@ packages:
   /type-fest/0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+    dev: true
+
+  /type-fest/2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
     dev: true
 
   /typescript/4.8.3:
