@@ -3,12 +3,12 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Layout from '../components/layout'
-import { useGeolocation } from '../utils/geolocation'
+import { useDebouncedGeolocation } from '../utils/geolocation'
 
 const Home: NextPage = () => {
   const [navigationLink, setNavigationLink] = useState('/results')
 
-  const location = useGeolocation()
+  const location = useDebouncedGeolocation({ distanceThreshold: 200, isEnabled: true })
 
   useEffect(() => {
     location.position && setNavigationLink(`/results?lat=${location.position.coords.latitude}&lng=${location.position.coords.longitude}`)

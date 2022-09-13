@@ -1,7 +1,22 @@
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
 import type { LatLng } from './coordinate'
 import { FALLBACKCOORDS } from './coordinate'
 import type { LocationStateType } from './geolocation'
+
+/**
+ * A helper to create a Context and Provider with no upfront default value, and
+ * without having to check for undefined all the time.
+ */
+function createSafeContext<A extends {} | null>() {
+  const ctx = createContext<A | undefined>(undefined)
+  function useCtx() {
+    const c = useContext(ctx)
+    if (c === undefined)
+      throw new Error('useCtx must be inside a Provider with a value')
+    return c
+  }
+  return [useCtx, ctx.Provider] as const
+}
 
 interface StationSelectionType {
   select: (id: string) => void
@@ -34,4 +49,4 @@ export const MapContext = createContext<MapContextType>({
 })
 
 // TODO: protect contexts with this:  https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/context/#extended-example
-export const GeolocationContext = createContext<LocationStateType>({ isLoading: true, position: null, error: null })
+export const [useGeolocationContext, GeolocationContextProvider] = createSafeContext<LocationStateType>()

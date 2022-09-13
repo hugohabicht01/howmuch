@@ -113,7 +113,12 @@ export const geolocationDebouncer = (oldState: LocationStateType, newState: Loca
   return { state: oldState, modified: false }
 }
 
-export const useDebouncedGeolocation = (distanceThreshold: number, isEnabled: boolean) => {
+interface useDebouncedGeolocationOptions {
+  distanceThreshold: number
+  isEnabled: boolean
+}
+
+export const useDebouncedGeolocation = ({ distanceThreshold, isEnabled = true }: useDebouncedGeolocationOptions) => {
   const [debounced, setDebounced] = useState<LocationStateType>({
     isLoading: true,
     position: null,

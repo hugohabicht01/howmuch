@@ -7,9 +7,9 @@ import Prices from '../components/Prices'
 import Map from '../components/map/Map'
 import type { LatLng } from '../utils/coordinate'
 import { getLatLng } from '../utils/coordinate'
-import { MapContext, StationSelectionContext } from '../utils/contexts'
+import { GeolocationContextProvider, MapContext, StationSelectionContext } from '../utils/contexts'
 import Layout from '../components/layout'
-import { useGeolocation } from '../utils/geolocation'
+import { useDebouncedGeolocation } from '../utils/geolocation'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -50,8 +50,8 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
     setCenter,
   }
 
-  // TODO: Debounce this and then put it into a context
-  const location = useGeolocation()
+  // TODO: Move this up to a top level thing that can be shared between routes
+  const location = useDebouncedGeolocation({ isEnabled: true, distanceThreshold: 500 })
   const { position } = location
 
   // FIXME: This whole thing is really unclean, gotta think about a better way of implementing this kind of logic
@@ -84,21 +84,23 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
       </Head>
 
       <Layout>
-        <MapContext.Provider value={MapContextValue}>
-          {/* TODO: Move this into the MapContext */}
-          <StationSelectionContext.Provider value={{
-            uuid,
-            select: setUUID,
-          }} >
-            <div className="py-6">
-              <Prices prices={prices} />
-            </div>
-            <div className="flex flex-col justify-center">
-              <h3>Map</h3>
-              <Map prices={prices} />
-            </div>
-          </StationSelectionContext.Provider>
-        </MapContext.Provider>
+        <GeolocationContextProvider value={location}>
+          <MapContext.Provider value={MapContextValue}>
+            {/* TODO: Move this into the MapContext */}
+            <StationSelectionContext.Provider value={{
+              uuid,
+              select: setUUID,
+            }} >
+              <div className="py-6">
+                <Prices prices={prices} />
+              </div>
+              <div className="flex flex-col justify-center">
+                <h3>Map</h3>
+                <Map prices={prices} />
+              </div>
+            </StationSelectionContext.Provider>
+          </MapContext.Provider>
+        </GeolocationContextProvider>
       </Layout>
     </>
   )
