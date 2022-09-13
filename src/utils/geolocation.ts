@@ -2,19 +2,19 @@ import { useCallback, useEffect, useState } from 'react'
 import haversine from 'haversine'
 
 export interface LocationFoundType {
-  coords: GeolocationPosition
+  position: GeolocationPosition
   error: null
   isLoading: false
 }
 
 export interface LocationErrorType {
-  coords: null
+  position: null
   error: GeolocationPositionError
   isLoading: false
 }
 
 export interface LocationLoadingType {
-  coords: null
+  position: null
   error: null
   isLoading: true
 }
@@ -28,14 +28,14 @@ export const useGeolocation = (
 ) => {
   const [coordinates, setCoordinates] = useState<LocationStateType>({
     isLoading: true,
-    coords: null,
+    position: null,
     error: null,
   })
 
   const updateCoordinates = useCallback<PositionCallback>(
     (pos) => {
       setCoordinates({
-        coords: pos,
+        position: pos,
         isLoading: false,
         error: null,
       })
@@ -48,7 +48,7 @@ export const useGeolocation = (
 
   const setError = useCallback<PositionErrorCallback>((error) => {
     setCoordinates({
-      coords: null,
+      position: null,
       isLoading: false,
       error,
     })
@@ -93,19 +93,19 @@ export const useGeolocation = (
  */
 export const geolocationDebouncer = (oldState: LocationStateType, newState: LocationStateType, distanceThreshold: number): { state: LocationStateType; modified: boolean } => {
   // Get the newest error instead of the old one
-  if (!newState.coords && !oldState.coords)
+  if (!newState.position && !oldState.position)
     return { modified: true, state: newState }
 
   // TODO: Add some checks how old the good data is
   // Don't bother returning error if we still have old good data that can be used
-  if (!newState.coords)
+  if (!newState.position)
     return { state: oldState, modified: false }
   // If we didn't have any data previously, returning the new one is a no brainer
-  if (!oldState.coords)
+  if (!oldState.position)
     return { state: newState, modified: true }
 
-  const newCoords = { lat: newState.coords.coords.latitude, lng: newState.coords.coords.longitude }
-  const oldCoords = { lat: oldState.coords.coords.latitude, lng: oldState.coords.coords.longitude }
+  const newCoords = { lat: newState.position.coords.latitude, lng: newState.position.coords.longitude }
+  const oldCoords = { lat: oldState.position.coords.latitude, lng: oldState.position.coords.longitude }
   const distance = haversine(newCoords, oldCoords, { format: '{lat,lng}', unit: 'meter' })
   if (distance > distanceThreshold)
     return { state: newState, modified: true }
@@ -116,7 +116,7 @@ export const geolocationDebouncer = (oldState: LocationStateType, newState: Loca
 export const useDebouncedGeolocation = (distanceThreshold: number, isEnabled: boolean) => {
   const [debounced, setDebounced] = useState<LocationStateType>({
     isLoading: true,
-    coords: null,
+    position: null,
     error: null,
   })
 

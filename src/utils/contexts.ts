@@ -33,4 +33,5 @@ export const MapContext = createContext<MapContextType>({
   setCenter: () => { console.error('default handler for setZoom ran, this should never happen') },
 })
 
-export const GeolocationContext = createContext<LocationStateType>({ isLoading: true, coords: null, error: null })
+// TODO: protect contexts with this:  https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/context/#extended-example
+export const GeolocationContext = createContext<LocationStateType>({ isLoading: true, position: null, error: null })

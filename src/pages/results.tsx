@@ -52,14 +52,14 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
 
   // TODO: Debounce this and then put it into a context
   const location = useGeolocation()
-  const { coords } = location
+  const { position } = location
 
   // FIXME: This whole thing is really unclean, gotta think about a better way of implementing this kind of logic
   // It also causes massive performance issues, therefore its not ready for use just yet
 
   useEffect(() => {
-    if (coords) {
-      const geolocationLatLng = { lat: coords.coords.latitude, lng: coords.coords.longitude }
+    if (position) {
+      const geolocationLatLng = { lat: position.coords.latitude, lng: position.coords.longitude }
       // FIXME: This also causes massive performance issues, therefore its not ready for use just yet
       // if (center !== geolocationLatLng)
       //   setCenter(geolocationLatLng)
@@ -73,7 +73,7 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
         }
       }
     }
-  }, [coords])
+  }, [position])
 
   return (
     <>

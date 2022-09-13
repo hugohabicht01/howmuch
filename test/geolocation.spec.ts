@@ -5,7 +5,7 @@ import { geolocationDebouncer } from '../src/utils/geolocation'
 
 namespace testData {
   export const locationFoundState: ReadonlyDeep<LocationFoundType> = {
-    coords: {
+    position: {
       coords: {
         accuracy: 42,
         altitude: 42,
@@ -22,7 +22,7 @@ namespace testData {
   }
 
   export const locationFoundStateTwo: ReadonlyDeep<LocationFoundType> = {
-    coords: {
+    position: {
       coords: {
         accuracy: 42,
         altitude: 42,
@@ -39,7 +39,7 @@ namespace testData {
   }
 
   export const locationFoundStateThree: ReadonlyDeep<LocationFoundType> = {
-    coords: {
+    position: {
       coords: {
         accuracy: 42,
         altitude: 42,
@@ -56,7 +56,7 @@ namespace testData {
   }
 
   export const locationErrorState: ReadonlyDeep<LocationErrorType> = {
-    coords: null,
+    position: null,
     isLoading: false,
     error: {
       code: 42,
@@ -68,7 +68,7 @@ namespace testData {
   }
 
   export const locationErrorStateTwo: ReadonlyDeep<LocationErrorType> = {
-    coords: null,
+    position: null,
     isLoading: false,
     error: {
       code: 1337,

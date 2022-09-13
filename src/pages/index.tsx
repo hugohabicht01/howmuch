@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   const location = useGeolocation()
 
   useEffect(() => {
-    location.coords && setNavigationLink(`/results?lat=${location.coords.coords.latitude}&lng=${location.coords.coords.longitude}`)
+    location.position && setNavigationLink(`/results?lat=${location.position.coords.latitude}&lng=${location.position.coords.longitude}`)
   }, [location])
 
   return (
