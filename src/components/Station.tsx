@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import cn from 'classnames'
 import type { petrolpricesDataType } from '../pages/results'
-import { MapContext, StationSelectionContext } from '../utils/contexts'
+import { useMapContext, useStationSelectionContext } from '../utils/contexts'
 
 type petrolStationType = petrolpricesDataType['stations'][number]
 
@@ -83,8 +83,8 @@ const generateNavigationLink = (address: string) => {
 }
 
 export const Station: React.FC<Props> = ({ station }) => {
-  const { uuid, select } = useContext(StationSelectionContext)
-  const { setZoom, setCenter } = useContext(MapContext)
+  const { uuid, select } = useStationSelectionContext()
+  const { setZoom, setCenter } = useMapContext()
 
   const isSelected = uuid === station.id
   const { name, brand, street, postalCode, place, isOpen, fuels } = station

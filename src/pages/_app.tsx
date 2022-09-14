@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // src/pages/_app.tsx
 import { withTRPC } from '@trpc/next'
 import type { AppType } from 'next/dist/shared/lib/utils'
@@ -7,9 +8,9 @@ import type { AppRouter } from '../server/router'
 import '../styles/globals.css'
 
 const MyApp: AppType = ({
-  // eslint-disable-next-line react/prop-types
   Component,
-  // eslint-disable-next-line react/prop-types
+
+  // @ts-expect-error TODO, check later
   pageProps: { session, ...pageProps },
 }) => {
   return (

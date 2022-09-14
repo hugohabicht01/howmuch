@@ -1,8 +1,8 @@
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { env } from '../../env/client.mjs'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
-import { MapContext, StationSelectionContext } from '../../utils/contexts'
+import { useMapContext, useStationSelectionContext } from '../../utils/contexts'
 
 interface MarkerListProps {
   stations: petrolpricesDataType['stations']
@@ -23,9 +23,9 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
   const CurrentPetrolStationIcon = { ...PetrolStationIcon, strokeColor: 'blue', fillColor: 'blue' }
 
   // Intercomponent communication using context, could be replaced by a state management lib
-  const { select, uuid } = useContext(StationSelectionContext)
+  const { select, uuid } = useStationSelectionContext()
 
-  const { setZoom, setCenter } = useContext(MapContext)
+  const { setZoom, setCenter } = useMapContext()
 
   const onClick = (id: string) => () => {
     select(id)
@@ -87,7 +87,7 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
     zoom,
     setZoom,
     center,
-  } = useContext(MapContext)
+  } = useMapContext()
 
   useEffect(() => {
     // Unfortunately this is the only place the panning to the map actually works.

@@ -1,15 +1,18 @@
-import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
 import { useEffect, useState } from 'react'
-import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
-import { trpc } from '../utils/trpc'
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+
 import Prices from '../components/Prices'
 import Map from '../components/map/Map'
-import type { LatLng } from '../utils/coordinate'
-import { getLatLng } from '../utils/coordinate'
-import { GeolocationContextProvider, MapContext, StationSelectionContext } from '../utils/contexts'
 import Layout from '../components/layout'
+
+import { trpc } from '../utils/trpc'
+import { getLatLng } from '../utils/coordinate'
 import { useDebouncedGeolocation } from '../utils/geolocation'
+import { GeolocationContextProvider, MapContextProvider, StationSelectionContextProvider } from '../utils/contexts'
+
+import type { LatLng } from '../utils/coordinate'
+import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
@@ -85,9 +88,9 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
 
       <Layout>
         <GeolocationContextProvider value={location}>
-          <MapContext.Provider value={MapContextValue}>
+          <MapContextProvider value={MapContextValue}>
             {/* TODO: Move this into the MapContext */}
-            <StationSelectionContext.Provider value={{
+            <StationSelectionContextProvider value={{
               uuid,
               select: setUUID,
             }} >
@@ -98,8 +101,8 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
                 <h3>Map</h3>
                 <Map prices={prices} />
               </div>
-            </StationSelectionContext.Provider>
-          </MapContext.Provider>
+            </StationSelectionContextProvider>
+          </MapContextProvider>
         </GeolocationContextProvider>
       </Layout>
     </>
