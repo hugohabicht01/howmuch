@@ -6,6 +6,8 @@ import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import type { AppRouter } from '../server/router'
 import '../styles/globals.css'
+import { useDebouncedGeolocation } from '../utils/geolocation'
+import { GeolocationContextProvider } from '../utils/contexts'
 
 const MyApp: AppType = ({
   Component,
@@ -13,10 +15,14 @@ const MyApp: AppType = ({
   // @ts-expect-error TODO, check later
   pageProps: { session, ...pageProps },
 }) => {
+  const location = useDebouncedGeolocation({ isEnabled: true, distanceThreshold: 500 })
+
   return (
-    <SessionProvider session={session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <GeolocationContextProvider value={location}>
+      <SessionProvider session={session}>
+        <Component {...pageProps} />
+      </SessionProvider>
+    </GeolocationContextProvider>
   )
 }
 

@@ -8,6 +8,7 @@ interface MarkerListProps {
   stations: petrolpricesDataType['stations']
 }
 
+// FIXME: There seems to be some racecondition that causes the markers to not be rendered
 const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
   const PetrolStationIcon: google.maps.Symbol = {
     strokeColor: 'black',
