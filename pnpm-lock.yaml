@@ -16,6 +16,7 @@ specifiers:
   '@types/react-dom': 18.0.6
   '@types/styled-jsx': ^3.4.4
   '@vitejs/plugin-react': ^2.1.0
+  '@vitest/coverage-c8': ^0.23.2
   autoprefixer: ^10.4.10
   c8: ^7.12.0
   classnames: ^2.3.2
@@ -69,6 +70,7 @@ devDependencies:
   '@types/react-dom': 18.0.6
   '@types/styled-jsx': 3.4.4_react@18.2.0
   '@vitejs/plugin-react': 2.1.0_vite@3.1.0
+  '@vitest/coverage-c8': 0.23.2_jsdom@20.0.0
   autoprefixer: 10.4.10_postcss@8.4.16
   c8: 7.12.0
   eslint: 8.23.1
@@ -1156,6 +1158,24 @@ packages:
       vite: 3.1.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@vitest/coverage-c8/0.23.2_jsdom@20.0.0:
+    resolution: {integrity: sha512-VWT6zGj9iXEZCimnRLAUhf3siYVGIG9VryyMoo7B8zMOd+bnAbH8/7PhqvmjedVwa9wh61nkxqgG7/3Y/mzofQ==}
+    dependencies:
+      c8: 7.12.0
+      vitest: 0.23.2_jsdom@20.0.0
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - happy-dom
+      - jsdom
+      - less
+      - sass
+      - stylus
+      - supports-color
+      - terser
     dev: true
 
   /abab/2.0.6:
