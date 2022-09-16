@@ -1,13 +1,14 @@
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { useContext, useEffect } from 'react'
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api'
+import { useEffect } from 'react'
 import { env } from '../../env/client.mjs'
 import type { petrolpricesDataType, usePetrolPricesReturnType } from '../../pages/results'
-import { MapContext, StationSelectionContext } from '../../utils/contexts'
+import { useMapContext, useStationSelectionContext } from '../../utils/contexts'
 
 interface MarkerListProps {
   stations: petrolpricesDataType['stations']
 }
 
+// FIXME: There seems to be some racecondition that causes the markers to not be rendered
 const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
   const PetrolStationIcon: google.maps.Symbol = {
     strokeColor: 'black',
@@ -23,9 +24,9 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
   const CurrentPetrolStationIcon = { ...PetrolStationIcon, strokeColor: 'blue', fillColor: 'blue' }
 
   // Intercomponent communication using context, could be replaced by a state management lib
-  const { select, uuid } = useContext(StationSelectionContext)
+  const { select, uuid } = useStationSelectionContext()
 
-  const { setZoom, setCenter } = useContext(MapContext)
+  const { setZoom, setCenter } = useMapContext()
 
   const onClick = (id: string) => () => {
     select(id)
@@ -69,11 +70,15 @@ const containerStyle = {
   height: '50vh',
 }
 
+const loadScriptOptions = {
+  id: 'google-map-script',
+  libraries: ['geometry'],
+  googleMapsApiKey: NEXT_PUBLIC_GOOGLE_MAPS_APIKEY,
+} as const
+
 const Map = ({ prices }: ResultsMapProps): JSX.Element => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: NEXT_PUBLIC_GOOGLE_MAPS_APIKEY,
-  })
+  // @ts-expect-error due to the library having retarded type defs
+  const { isLoaded, loadError } = useLoadScript(loadScriptOptions)
 
   const { data } = prices
 
@@ -83,7 +88,7 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
     zoom,
     setZoom,
     center,
-  } = useContext(MapContext)
+  } = useMapContext()
 
   useEffect(() => {
     // Unfortunately this is the only place the panning to the map actually works.
@@ -96,6 +101,13 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
     if (map)
       setTimeout(() => map.setZoom(zoom), 1)
   }, [zoom, map])
+
+  if (loadError) {
+    console.error('Error while loading google maps: ', loadError)
+    return <div className="flex justify-center">
+      Maps couldn&apos;t be loaded
+    </div>
+  }
 
   return (
     <div className="flex justify-center">

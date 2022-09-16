@@ -1,22 +1,20 @@
-import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import Head from 'next/head'
-import { useState } from 'react'
-import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
-import { trpc } from '../utils/trpc'
+import { useEffect, useState } from 'react'
+import type { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+
 import Prices from '../components/Prices'
 import Map from '../components/map/Map'
-import { getLatLng } from '../utils/coordinate'
-import { MapContext, StationSelectionContext } from '../utils/contexts'
 import Layout from '../components/layout'
+
+import { trpc } from '../utils/trpc'
+import { getLatLng } from '../utils/coordinate'
+import { MapContextProvider, StationSelectionContextProvider, useGeolocationContext } from '../utils/contexts'
+
+import type { LatLng } from '../utils/coordinate'
+import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
-
-/**
- * TODO: Fetch the data on the server side
- * @see https://trpc.io/docs/ssg-helpers
- * Issue: https://github.com/hugohabicht01/howmuch/issues/6
- */
 
 export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
   return trpc.useQuery(['prices.prices', { lat, lng, rad }], { refetchOnWindowFocus: false })
@@ -25,9 +23,11 @@ export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
 export type usePetrolPricesReturnType = ReturnType<typeof usePetrolPrices>
 
 export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  // TODO: I'm kinda not happy with this being here, since I can't return early cuz of react complaining about conditional hooks
-  // at the same time i want to keep prices.tsx to stay purely pure, so I'll probably create a wrapper component
-  const prices = usePetrolPrices({ lat, lng, rad: 2 })
+  const [loc, setLoc] = useState<LatLng>({ lat, lng })
+
+  const location = useGeolocationContext()
+
+  const prices = usePetrolPrices({ ...loc, rad: 2 })
 
   // TODO: Move this into a Stateprovider component
   // This is to know which station has been clicked on the map
@@ -47,6 +47,17 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
     setCenter,
   }
 
+  useEffect(() => {
+    if (!location.position)
+      return
+    const { position: { coords: { latitude, longitude } } } = location
+    const newSearchCenter = { lat: latitude, lng: longitude }
+    setLoc(newSearchCenter)
+    // eslint-disable-next-line no-console
+    console.log(`set new search location due to geolocation changing, lat: ${latitude}, lng: ${longitude}`)
+    setCenter(newSearchCenter)
+  }, [location])
+
   return (
     <>
       <Head>
@@ -56,10 +67,9 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
       </Head>
 
       <Layout>
-        {/* TODO: Move this stuff into a layout component */}
-        <MapContext.Provider value={MapContextValue}>
+        <MapContextProvider value={MapContextValue}>
           {/* TODO: Move this into the MapContext */}
-          <StationSelectionContext.Provider value={{
+          <StationSelectionContextProvider value={{
             uuid,
             select: setUUID,
           }} >
@@ -70,8 +80,8 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
               <h3>Map</h3>
               <Map prices={prices} />
             </div>
-          </StationSelectionContext.Provider>
-        </MapContext.Provider>
+          </StationSelectionContextProvider>
+        </MapContextProvider>
       </Layout>
     </>
   )

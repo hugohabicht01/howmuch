@@ -3,6 +3,7 @@ import Link from 'next/link'
 interface LayoutProps {
   children: JSX.Element
 }
+
 export default function Layout({ children }: LayoutProps) {
   return (
     <div className="flex flex-col items-center w-8/10 min-h-screen mx-auto bg-gradient-to-r from-rose-400 to-orange-300 pb-20">
