@@ -110,7 +110,7 @@ const Map = ({ prices }: ResultsMapProps): JSX.Element => {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center" id="mapcontainer">
       {isLoaded
         ? (
           <GoogleMap

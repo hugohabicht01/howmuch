@@ -100,6 +100,10 @@ export const Station: React.FC<Props> = ({ station }) => {
     select(id)
     setCenter(station.coords)
     setZoom(15)
+
+    const map = document.getElementById('mapcontainer')
+    if (map)
+      map.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
