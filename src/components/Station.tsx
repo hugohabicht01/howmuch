@@ -118,7 +118,8 @@ export const Station: React.FC<Props> = ({ station }) => {
       'border-gray-200': true,
       'border-blue-500': isSelected,
     })}
-      onClick={onClick(station.id)}>
+      onClick={onClick(station.id)}
+      id={station.id}>
       <h2 className="text-lg font-semibold">{formattedName}</h2>
       <p>{formattedLocation}</p>
       <p><Open isOpen={isOpen} /></p>

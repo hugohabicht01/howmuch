@@ -38,6 +38,13 @@ const MarkerList = ({ stations }: MarkerListProps): JSX.Element => {
     if (station) {
       setCenter(station.coords)
       setZoom(15)
+
+      // scroll to station container
+      // TODO: Add some sort of setting where one can select whether they want this kind of behaviour
+      // TODO: Think about moving this to the station component itself, as the logic is kind of in the wrong place rn
+      // Putting it there is far more difficult, but makes more sense imo and helps with typesafety, as this is not typesafe at all
+      const stationcontainer = document.getElementById(station.id)
+      stationcontainer && stationcontainer.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
