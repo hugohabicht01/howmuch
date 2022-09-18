@@ -100,6 +100,10 @@ export const Station: React.FC<Props> = ({ station }) => {
     select(id)
     setCenter(station.coords)
     setZoom(15)
+
+    const map = document.getElementById('mapcontainer')
+    if (map)
+      map.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -114,7 +118,8 @@ export const Station: React.FC<Props> = ({ station }) => {
       'border-gray-200': true,
       'border-blue-500': isSelected,
     })}
-      onClick={onClick(station.id)}>
+      onClick={onClick(station.id)}
+      id={station.id}>
       <h2 className="text-lg font-semibold">{formattedName}</h2>
       <p>{formattedLocation}</p>
       <p><Open isOpen={isOpen} /></p>
