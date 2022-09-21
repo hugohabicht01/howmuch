@@ -9,6 +9,8 @@ export const serverSchema = z.object({
   // DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(['development', 'test', 'production']),
   TANKERKOENIG_APIKEY: z.string(),
+  GITHUB_ID: z.string(),
+  GITHUB_SECRET: z.string(),
 })
 
 /**
