@@ -5,13 +5,15 @@ import GithubProvider from 'next-auth/providers/github'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '../../../server/db/client'
 
+import { env } from '../../../env/server.mjs'
+
 export default NextAuth({
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_ID ?? '',
-      clientSecret: process.env.GITHUB_SECRET ?? '',
+      clientId: env.GITHUB_ID ?? '',
+      clientSecret: env.GITHUB_SECRET ?? '',
     }),
     // ...add more providers here
   ],

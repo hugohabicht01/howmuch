@@ -1,27 +1,24 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { getLatLng } from './utils/coordinate'
 
 export function middleware(request: NextRequest) {
   const { url } = request
-  const currentUrl = new URL(url)
+  const redirectUrl = new URL(url)
 
   const { geo } = request
-  const { country } = geo ?? { country: undefined }
+  const { country, latitude, longitude } = geo ?? { country: undefined, latitude: undefined, longitude: undefined }
   if (country !== undefined && country !== 'DE') {
-    currentUrl.pathname = '/notsupported'
-    return NextResponse.redirect(currentUrl)
+    redirectUrl.pathname = '/notsupported'
+    return NextResponse.redirect(redirectUrl)
   }
 
-  const coordinate = getLatLng({ request, url: request.url })
-
-  const params = new URLSearchParams({ lat: coordinate.lat.toString(), lng: coordinate.lng.toString() }).toString()
-  currentUrl.search = params
+  latitude && redirectUrl.searchParams.set('ipbasedlat', latitude)
+  longitude && redirectUrl.searchParams.set('ipbasedlng', longitude)
 
   // avoid infinite redirects
-  if (url === currentUrl.toString())
+  if (url === redirectUrl.toString())
     return NextResponse.next()
-  return NextResponse.redirect(currentUrl)
+  return NextResponse.redirect(redirectUrl)
 }
 
 // See "Matching Paths" below to learn more

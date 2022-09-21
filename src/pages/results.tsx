@@ -7,7 +7,7 @@ import Map from '../components/map/Map'
 import Layout from '../components/layout'
 
 import { trpc } from '../utils/trpc'
-import { getLatLng } from '../utils/coordinate'
+import { getLatLngWithFallback, getRadiusFromUrlWithFallback } from '../utils/coordinate'
 import { MapContextProvider, StationSelectionContextProvider, useGeolocationContext } from '../utils/contexts'
 
 import type { LatLng } from '../utils/coordinate'
@@ -16,18 +16,20 @@ import type { InferQueryInput, InferQueryOutput } from '../utils/trpc'
 type petrolpricesParamsType = InferQueryInput<'prices.prices'>
 export type petrolpricesDataType = InferQueryOutput<'prices.prices'>
 
+// TODO: Overwork the whole radius fallback stuff, have one place where fallbacks are being used, and everything else requires it or ignores it.
+// Setting the fallback at 25 different places throughout the project isnt the smartest idea
 export const usePetrolPrices = ({ lat, lng, rad }: petrolpricesParamsType) => {
   return trpc.useQuery(['prices.prices', { lat, lng, rad }], { refetchOnWindowFocus: false })
 }
 
 export type usePetrolPricesReturnType = ReturnType<typeof usePetrolPrices>
 
-export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Page({ lat, lng, radius }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [loc, setLoc] = useState<LatLng>({ lat, lng })
 
   const location = useGeolocationContext()
 
-  const prices = usePetrolPrices({ ...loc, rad: 2 })
+  const prices = usePetrolPrices({ ...loc, rad: radius })
 
   // TODO: Move this into a Stateprovider component
   // This is to know which station has been clicked on the map
@@ -88,13 +90,16 @@ export default function Page({ lat, lng }: InferGetServerSidePropsType<typeof ge
 }
 
 export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  // This is just to construct a `URL` that can be passed to the getLatLng function
   const { host = 'couldntgethost' } = ctx.req.headers
   const url = new URL(ctx.resolvedUrl, `http://${host}`).toString()
-  const { lat, lng } = getLatLng({ url })
+  const { lat, lng } = getLatLngWithFallback({ url })
+  const radius = getRadiusFromUrlWithFallback({ url })
   return {
     props: {
       lat,
       lng,
+      radius,
     },
   }
 }
